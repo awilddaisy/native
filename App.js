@@ -1,5 +1,5 @@
 import React, { useEffect, useState, } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, AsyncStorage, TextInput, Button } from 'react-native';
 import  Navigation from './components/Navigation';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import OnboardingScreen from './screens/OnboardingScreen';
@@ -8,21 +8,87 @@ import { NavigationContainer } from '@react-navigation/native';
 
 
 
-
 const AppStack = createNativeStackNavigator();
+const loggedInStates={
+  NOT_LOGGED_IN: "NOT_LOGGED_IN",
+  LOGGED_IN: "LOGGED_IN",
+  CODE_SENT: "CODE_SENT"
+}
 
 const App = () =>{
   const [isFirstLaunch, setFirstLaunch] = React.useState(true);
   const [homeTodayScore, setHomeTodayScore] = React.useState(0);
+  const [loggedInState, setLoggedInState] = React.useState(loggedInStates.NOT_LOGGED_IN);
+  const [phoneNumber, setPhoneNumber] = React.useState("")
+  const [oneTimePassword, setOneTimePassword] = React.useState(null);
 
    if (isFirstLaunch == true){
 return(
   <OnboardingScreen setFirstLaunch={setFirstLaunch}/>
  
 );
-  }else{
-    return <Navigation/>
-  }
-}
+  }else if (loggedInState == loggedInStates.LOGGED_IN){
+    return <Navigation/>;
+  }else if (loggedInState == loggedInStates.NOT_LOGGED_IN){
+    return(
+      <View>
+        <TextInput style={styles.input}
+          placeholder='Phone Number'
+          placeholderTextColor='#4252f5'
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}>
+          
+        
+        </TextInput>
+        <Button
+          title='Send'
+          style={styles.button}
+          onPress={async()=>{
+            console.log("A button was pressed")
+            await fetch('https://dev.stedi.me/twofactorlogin/7757623189',
+          {
+            method: 'POST',
+            headers: {
+              'content-type':'application/text'
+            }
+          })
+        setLoggedInState(loggedInStates.CODESENT)
+        }}
+        />
+      </View>
+      )}
+      }
+
+  else if(loggedInState == loggedInStates.CODE_SENT) {
+    return (
+    <View>
+
+    </View>
+  )}
+
+
+
  export default App;
 
+ const styles = StyleSheet.create({
+  container:{
+      flex:1, 
+      alignItems:'center',
+      justifyContent: 'center'
+  },
+  input: {
+    height: 40,
+    marginTop:100,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
+  margin:{
+    marginTop:100
+  },
+  button: {
+    alignItems: "center",
+    backgroundColor: "#EB00C7",
+    padding: 10
+  }    
+})
