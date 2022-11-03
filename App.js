@@ -37,38 +37,68 @@ return(
           placeholderTextColor='#4252f5'
             value={phoneNumber}
             onChangeText={setPhoneNumber}>
-          
         
         </TextInput>
         <Button
-          title='Send'
+        title='Login'
           style={styles.button}
           onPress={async()=>{
-            console.log("A button was pressed")
-            await fetch('https://dev.stedi.me/twofactorlogin/7757623189',
+            console.log('Button was pressed')
+            const textResponse=await fetch('https://dev.stedi.me/twofactorlogin/'+phoneNumber,
+            {
+              method:'POST',
+              headers:{
+                'content-type':'application/text'
+              }
+            });
+            // console.log("textresponse",textResponse.status)
+            setLoggedInState(loggedInStates.CODE_SENT)
+          }}
+          />
+      </View>)
+    }
+      else if (loggedInState == loggedInStates.CODE_SENT) {
+      return (
+      <View>
+  <TextInput style={styles.input}
+      placeholderTextColor='#211F0F'
+      placeholder="add code here"
+        value={oneTimePassword}
+        onChangeText={setOneTimePassword}
+        keyboardType = "numeric">
+      </TextInput> 
+      <Button
+      title='Send again'
+        style={styles.button}
+        onPress={async()=>{
+          console.log('login Button was pressed')
+          const loginResponse=await fetch('https://dev.stedi.me/twofactorlogin',
+          
           {
-            method: 'POST',
-            headers: {
+            method:'POST',
+            headers:{
               'content-type':'application/text'
-            }
-          })
-        setLoggedInState(loggedInStates.CODESENT)
+            },
+            body:JSON.stringify({
+              phoneNumber,
+              oneTimePassword
+            })
+          });
+          console.log(phoneNumber)
+          console.log(oneTimePassword)
+          console.log(loginResponse.status)
+          if(loginResponse.status==200){
+            setLoggedInState(loggedInStates.LOGGED_IN);
+          } else{
+            setLoggedInState(loggedInStates.NOT_LOGGED_IN);
+          }
         }}
         />
-      </View>
-      )}
-      }
+  </View>
+)}
+} 
 
-  else if(loggedInState == loggedInStates.CODE_SENT) {
-    return (
-    <View>
-
-    </View>
-  )}
-
-
-
- export default App;
+export default App;
 
  const styles = StyleSheet.create({
   container:{

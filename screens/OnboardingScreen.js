@@ -43,12 +43,8 @@ const OnboardingScreen = ({setFirstLaunch}) =>{
             {
               backgroundColor: '#fff',
               image: <Image   style={{height: '60%', width: '90%', resizeMode:'contain', marginBottom:-200}} source={require('../image/testing.png')} />,
-              subtitle: (
-                <View>
-                <Text style={{fontWeight:'bold', textAlign:'center', color:'#A0CE4E', fontSize:19, margin:12,  marginTop: -70}}>We value your privacy. We will never sell or share your personal data.</Text>
-                <TextInput placeholder='Phone Number' />
-                </View>
-              ),
+              title: <Text style={{fontWeight:'bold', fontSize: 19, margin:15, textAlign:'center', color:'#A0CE4E', marginTop: -130 }}>Congratulations!</Text>,
+                subtitle: 'You have created a profile with STEDI Balance',
             },
             {
                 backgroundColor: '#fff',
