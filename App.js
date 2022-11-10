@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import OnboardingScreen from './screens/OnboardingScreen';
 import Home from './screens/Home';
 import { NavigationContainer } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -22,6 +23,26 @@ const App = () =>{
   const [phoneNumber, setPhoneNumber] = React.useState("")
   const [oneTimePassword, setOneTimePassword] = React.useState(null);
 
+  useEffect(()=>{
+    const getSessionToken = async()=>{
+      const sessionToken = await AsyncStorage.getItem('sessionToken');
+      console.log('sessionToken', sessionToken);
+      const validateResponse = await fetch('https://dev.stedi.me/validate/'+sessionToken,
+      {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/text'
+        }
+      });
+      if(validateResponse.status==200){
+
+        const userName = await validateResponse.text();
+        await AsyncStorage.setItem('userName', userName);
+        setLoggedInState(loggedInStates.LOGGED_IN);
+      }
+    }
+    getSessionToken();
+  })
    if (isFirstLaunch == true){
 return(
   <OnboardingScreen setFirstLaunch={setFirstLaunch}/>
@@ -88,8 +109,13 @@ return(
           console.log(oneTimePassword)
           console.log(loginResponse.status)
           if(loginResponse.status==200){
+            const sessionToken=await loginResponse.text();
+            console.log("session Token",sessionToken)
+            await AsyncStorage.setItem("sessionToken",sessionToken)
             setLoggedInState(loggedInStates.LOGGED_IN);
           } else{
+            console.log('response ststus', loginResponse.status);
+            Alert.alert('Invalid','Invalid login information')
             setLoggedInState(loggedInStates.NOT_LOGGED_IN);
           }
         }}
