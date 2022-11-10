@@ -35,10 +35,11 @@ const App = () =>{
         }
       });
       if(validateResponse.status==200){
-
-        const userName = await validateResponse.text();
-        await AsyncStorage.setItem('userName', userName);
+        
         setLoggedInState(loggedInStates.LOGGED_IN);
+        const userName = await validateResponse.text();
+        AsyncStorage.setItem('userName', userName);
+        console.log('userName', userName);
       }
     }
     getSessionToken();
