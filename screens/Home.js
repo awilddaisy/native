@@ -4,7 +4,7 @@ import {FontAwesome5} from '@expo/vector-icons';
 import quotes from '../data/quote.json';
 import { Card, CardTitle, CardContent} from 'react-native-material-cards';
 import { LineChart} from 'react-native-chart-kit';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -105,7 +105,7 @@ const colorsToday = colors[day.getDay()];
         {
           data:[3615, 1165, 756, 309, 200, 172, 166, 171, 166, 172, 171, 186, 172, 180, 165, 179, 192, 172, 178, 173]
         }
-      ]
+      ] 
     }}
     width={270} // from react-native
     height={150}
