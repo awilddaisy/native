@@ -95,7 +95,7 @@ const colorsToday = colors[day.getDay()];
          subtitle={20}
         title='Monthly'
 
-        //average score
+
        />
         <CardContent style={{paddingLeft:5}}> 
         <LineChart 
