@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Image, Share} from 'react-native';
-import { Accelerometer } from 'expo-sensors';
+import { Accelerometer} from 'expo-sensors';
 import getSpikesFromAccelerometer from '../utils/StepCalculator';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import { Line, G } from 'react-native-svg'
@@ -10,6 +10,7 @@ import { Card, CardTitle, CardContent, CardAction, CardButton, CardImage, button
 import exerciseImg from '../image/exercise2.png';
 import ProgressBar from 'react-native-progress/Bar';
 import { FontAwesome5 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import { Ionicons} from 'react-native-vector-icons';
 // import { Button } from 'react-native-elements';
 // import { IconButton } from 'react-native-paper';
@@ -88,14 +89,16 @@ stepPoints  = [];
    previousTime = stepObject.time;
    stepPoints.push(stepTime);
 }); 
-stepPoints.length=30;
-  try{
-    const sessionToken = await AsyncStorage.getItem('sessionToken')
-    const userName = await AsyncStorage.getItem('userName')
-    userName.current = userName;
+// stepPoints.length=30;
+try{
+  const sessionToken = await AsyncStorage.getItem('sessionToken')
+    token.current = await AsyncStorage.getItem('sessionToken');
+    userName.current = await AsyncStorage.getItem('userName')
     token.current = sessionToken;
-console.log('token:' ,token.current);
-await fetch('https://dev.stedi.me/rapidsteptest',{
+    console.log('token:' , token.current);
+    await fetch('https://dev.stedi.me/rapidsteptest',{
+    // userName.current = userName;
+// console.log('counterUserName', userName)
   method:'POST',
   headers:{
     'Content-Type': 'application/json',
@@ -112,7 +115,7 @@ totalSteps:30
 })
   }
  catch(error){
-  console.log('error', error);
+  console.log('save error', error);
  }
 }
 
@@ -121,7 +124,7 @@ totalSteps:30
 const getResults = async () =>{
 
 try{
-  const scoreResponse = await fetch('https://dev.stedi.me/riskscore/rom19010@byui.edu',{
+  const scoreResponse = await fetch('https://dev.stedi.me/riskscore/'+userName.current,{
   method:'GET',
   headers:{
     'Content-Type': 'application/json',
@@ -131,9 +134,9 @@ try{
 const scoreObject = await scoreResponse.json();
 console.log("score:",scoreObject.score);
 setScore(scoreObject.score);
-props.setHomeTodayScore(scoreObject.score);
+// props.setHomeTodayScore(scoreObject.score);
 }catch(error){
-  console.log('error', error);
+  console.log('score error', error);
  }
 }
 

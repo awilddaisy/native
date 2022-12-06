@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useRef} from 'react';
-//mport React from 'react';
-import { StyleSheet, Text, View, Image, SafeAreaView , Share, ScrollView, Button} from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, View, Image, SafeAreaView , Share, ScrollView, Button} from 'react-native';
 import { Card, CardTitle, CardContent} from 'react-native-material-cards';
-import {Camera, CameraType, cameraReady} from 'expo-camera'; 
+import {Camera, CameraType, CameraReady} from 'expo-camera'; 
 import BarChart from 'react-native-bar-chart';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-// import Share from 'react-native-share';
 
 
 
@@ -27,7 +24,7 @@ const Profile = (props) => {
 
   const [userName, setUserName] = useState("");
   const [profilePhoto, setProfilePhoto] = useState(null);
-  const[cameraReay, setCameraReady] = useState(false);
+  const[cameraReady, setCameraReady] = useState(false);
   const cameraRef = useRef(null);
 
   useEffect(()=>{
@@ -58,12 +55,12 @@ const Profile = (props) => {
     }
 if(profilePhoto==null){
   const cameraOptions={
-  quality:0,
+  quality:0, 
   exif:false
 }
   return (
     <View style={styles.container}>
-    <Camera type={styles.camera} ref={cameraRef} onCameraReady={()=>{setCameraReady(true)}}>
+    <Camera type={CameraType.front} style={styles.camera} ref={cameraRef} onCameraReady={()=>{setCameraReady(true)}}>
       <View style={styles.buttonContainer}>
         {cameraReady?<TouchableOpacity style={styles.button} onPress={async ()=> {
 
@@ -72,7 +69,7 @@ if(profilePhoto==null){
           await AsyncStorage.setItem('profilePhoto',picture.uri);
           setProfilePhoto(picture.uri);
         }}>
-        <Text style={styles.text}>Take Picture</Text>
+        <Text style={styles.text}>Take Picture</Text> 
       </TouchableOpacity>: null}
       </View>
     </Camera>
@@ -93,13 +90,17 @@ shadowRadius: 2.62,
 elevation: 4}}>
      <CardContent>
      <Image style={{height: 100, width:100, borderRadius: 75}}
-      source={require('../image/me.jpg')} />
-    <Text style={{marginTop:10,marginBottom:10,fontWeight: 'bold'}}>Sarah Romero</Text>
+      source={{uri:profilePhoto}} />
+    <Text style={{marginTop:10,marginBottom:10,fontWeight: 'bold'}}>{userName}</Text>
 
     <Text style={{marginTop:20,marginBottom:2}}>This Week's progress</Text>
 {/* <BarChart barColor='green' data={data} horizontalData={horizontalData} /> */}
      <View style={{ marginTop: 50 }}>
       <Button onPress={myCustomerShare} title="Share" />
+        <Button onPress={async () => {
+          setProfilePhoto(null);
+        }
+        } title="New Picture" />
     </View>
     </CardContent>
     </Card>
@@ -108,8 +109,28 @@ elevation: 4}}>
 };
 export default Profile;
 const styles = StyleSheet.create({
-  container:{
-    flex:1,
-    padding:20
-  }
-})
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20
+  },
+  camera: {
+    flex: 1,
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    margin: 64,
+  },
+  button: {
+    flex: 1,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+});
